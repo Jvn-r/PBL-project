@@ -1,0 +1,139 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX 100
+
+char ssn[MAX][20], name[MAX][50], dept[MAX][30], designation[MAX][30], phone[MAX][15];
+float salary[MAX];
+int prev[MAX], next[MAX];
+int head = -1, tail = -1, count = 0;
+
+void insertEnd() {
+    if (count >= MAX) {
+        printf("List is full.\n");
+        return;
+    }
+    int index = count++;
+    printf("Enter SSN: ");
+    scanf("%s", ssn[index]);
+    printf("Enter Name: ");
+    scanf(" %[^\n]", name[index]);
+    printf("Enter Department: ");
+    scanf(" %[^\n]", dept[index]);
+    printf("Enter Designation: ");
+    scanf(" %[^\n]", designation[index]);
+    printf("Enter Salary: ");
+    scanf("%f", &salary[index]);
+    printf("Enter Phone Number: ");
+    scanf("%s", phone[index]);
+    if (head == -1) {
+        head = tail = index;
+        prev[index] = next[index] = -1;
+    } else {
+        next[tail] = index;
+        prev[index] = tail;
+        next[index] = -1;
+        tail = index;
+    }
+    printf("Employee added at the end.\n");
+}
+
+void display() {
+    if (head == -1) {
+        printf("The list is empty.\n");
+        return;
+    }
+    int current = head, nodeCount = 0;
+    printf("\nDoubly Linked List:\n");
+    while (current != -1) {
+        printf("SSN: %s, Name: %s, Dept: %s, Designation: %s, Salary: %.2f, Phone: %s\n",
+               ssn[current], name[current], dept[current], designation[current], salary[current], phone[current]);
+        current = next[current];
+        nodeCount++;
+    }
+    printf("Total nodes: %d\n", nodeCount);
+}
+
+void deleteEnd() {
+    if (tail == -1) {
+        printf("The list is empty. Nothing to delete.\n");
+        return;
+    }
+    printf("Employee with SSN %s deleted from the end.\n", ssn[tail]);
+    if (head == tail) {
+        head = tail = -1;
+    } else {
+        tail = prev[tail];
+        next[tail] = -1;
+    }
+}
+
+void insertFront() {
+    if (count >= MAX) {
+        printf("List is full.\n");
+        return;
+    }
+    int index = count++;
+    printf("Enter SSN: ");
+    scanf("%s", ssn[index]);
+    printf("Enter Name: ");
+    scanf(" %[^\n]", name[index]);
+    printf("Enter Department: ");
+    scanf(" %[^\n]", dept[index]);
+    printf("Enter Designation: ");
+    scanf(" %[^\n]", designation[index]);
+    printf("Enter Salary: ");
+    scanf("%f", &salary[index]);
+    printf("Enter Phone Number: ");
+    scanf("%s", phone[index]);
+    if (head == -1) {
+        head = tail = index;
+        prev[index] = next[index] = -1;
+    } else {
+        prev[head] = index;
+        next[index] = head;
+        prev[index] = -1;
+        head = index;
+    }
+    printf("Employee added at the front.\n");
+}
+
+void deleteFront() {
+    if (head == -1) {
+        printf("The list is empty. Nothing to delete.\n");
+        return;
+    }
+    printf("Employee with SSN %s deleted from the front.\n", ssn[head]);
+    if (head == tail) {
+        head = tail = -1;
+    } else {
+        head = next[head];
+        prev[head] = -1;
+    }
+}
+
+int main() {
+    int choice;
+    while (1) {
+        printf("\nMenu:\n");
+        printf("1. Insert at End\n");
+        printf("2. Insert at Front\n");
+        printf("3. Delete from End\n");
+        printf("4. Delete from Front\n");
+        printf("5. Display List and Count Nodes\n");
+        printf("6. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+        switch (choice) {
+            case 1: insertEnd(); break;
+            case 2: insertFront(); break;
+            case 3: deleteEnd(); break;
+            case 4: deleteFront(); break;
+            case 5: display(); break;
+            case 6: exit(0);
+            default: printf("Invalid choice. Please try again.\n");
+        }
+    }
+    return 0;
+}
