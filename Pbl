@@ -83,13 +83,20 @@ public class CashFlowMinimizer {
         }
 
         int zeroNetAmounts = (int) netAmounts.stream().filter(b -> b.netAmount == 0).count();
+        int matching = 0;
 
         while (zeroNetAmounts < numBanks) {
             int minIndex = getMinIndex(netAmounts);
             Map.Entry<Integer, String> maxAns = getMaxIndexWithMatchingType(netAmounts, minIndex, maxNumTypes);
 
             int maxIndex = maxAns.getKey();
-            if (maxIndex == -1) break;
+            String matchingType = maxAns.getValue();
+            
+            if (maxIndex == -1 || matchingType == null) {
+                System.out.println("\nNo compatible payment modes exist between " + netAmounts.get(minIndex).name + " and any creditor bank.");
+                matching++;                
+                break;
+            }
 
             int transactionAmount = Math.min(
                 Math.abs(netAmounts.get(minIndex).netAmount), netAmounts.get(maxIndex).netAmount);
@@ -102,14 +109,15 @@ public class CashFlowMinimizer {
             if (netAmounts.get(minIndex).netAmount == 0) zeroNetAmounts++;
             if (netAmounts.get(maxIndex).netAmount == 0) zeroNetAmounts++;
         }
-
-        printTransactions(numBanks, ansGraph, banks);
+        if (matching == 0)
+            printTransactions(numBanks, ansGraph, banks);
+        else 
+            System.exit(0);
     }
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("Welcome to the Cash Flow Minimizer System!");
         int numBanks;
         do {
             System.out.print("Enter the number of banks participating in the transactions: ");
@@ -134,6 +142,10 @@ public class CashFlowMinimizer {
         do {
             System.out.print("Enter the number of transactions: ");
             numTransactions = sc.nextInt();
+            if(numTransactions == 0){
+                System.out.println("\nNo transactions made\n");
+                System.exit(0);
+            }
         } while (numTransactions <= 0);
 
         int[][] graph = new int[numBanks][numBanks];
